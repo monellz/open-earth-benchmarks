@@ -7,6 +7,7 @@ project(OpenEarthBenchmarks VERSION 1.0
 include_directories(include)
 include_directories(kernels)
 
+add_compile_options(-O3)
 add_executable(laplace src/laplace.cpp)
 add_executable(hdiffsa src/hdiffsa.cpp)
 add_executable(hdiffsmag src/hdiffsmag.cpp)

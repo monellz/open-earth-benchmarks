@@ -12,20 +12,20 @@ typedef double ElementType;
 
 // program times the execution of the linked program and times the result
 int main(int argc, char **argv) {
-
-  if(argc == 3) {
-      domain_size = atoi(argv[1]);
-      domain_height = atoi(argv[2]);
+  if (argc == 3) {
+    domain_size = atoi(argv[1]);
+    domain_height = atoi(argv[2]);
   } else if (argc == 1) {
   } else {
-      std::cout << "Either provide the domain size and domain height like this \"./kernel 128 60\" or do not provide any arguments at all in which case the program is ran with domain size 64 and domain heigh 60" << std::endl;
-      exit(1);
+    std::cout << "Either provide the domain size and domain height like this \"./kernel 128 60\" or do not provide any "
+                 "arguments at all in which case the program is ran with domain size 64 and domain heigh 60"
+              << std::endl;
+    exit(1);
   }
 
   const int64_t size1D = domain_size + 2 * halo_width;
-  const std::array<int64_t, 3> sizes3D = { domain_size + 2*halo_width,
-                                           domain_size + 2*halo_width,
-                                           domain_height + 2*halo_width };
+  const std::array<int64_t, 3> sizes3D = {domain_size + 2 * halo_width, domain_size + 2 * halo_width,
+                                          domain_height + 2 * halo_width};
 
   Storage3D uin = allocateStorage(sizes3D);
   Storage3D vin = allocateStorage(sizes3D);
@@ -62,7 +62,11 @@ int main(int argc, char **argv) {
   initValue(T_sqr_s, 0.0, domain_size, domain_height);
   initValue(S_sqr_uv, 0.0, domain_size, domain_height);
 
-  hdiffsmag(uout, vout, uin, vin, mask, crlavo, crlavu, crlato, crlatu, acrlat0, T_sqr_s, S_sqr_uv, eddlat, eddlon, tau_smag, weight_smag);
+  timer.start("hdiffsmag");
+  hdiffsmag(uout, vout, uin, vin, mask, crlavo, crlavu, crlato, crlatu, acrlat0, T_sqr_s, S_sqr_uv, eddlat, eddlon,
+            tau_smag, weight_smag);
+  timer.stop("hdiffsmag");
+  timer.show_all();
 
   // free the storage
   freeStorage(uin);

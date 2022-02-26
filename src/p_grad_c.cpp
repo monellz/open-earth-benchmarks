@@ -12,20 +12,20 @@ typedef double ElementType;
 
 // program times the execution of the linked program and times the result
 int main(int argc, char **argv) {
-
-  if(argc == 3) {
-      domain_size = atoi(argv[1]);
-      domain_height = atoi(argv[2]);
+  if (argc == 3) {
+    domain_size = atoi(argv[1]);
+    domain_height = atoi(argv[2]);
   } else if (argc == 1) {
   } else {
-      std::cout << "Either provide the domain size and domain height like this \"./kernel 128 60\" or do not provide any arguments at all in which case the program is ran with domain size 64 and domain heigh 60" << std::endl;
-      exit(1);
+    std::cout << "Either provide the domain size and domain height like this \"./kernel 128 60\" or do not provide any "
+                 "arguments at all in which case the program is ran with domain size 64 and domain heigh 60"
+              << std::endl;
+    exit(1);
   }
 
-  const int64_t size1D = domain_size + 2*halo_width;
-  const std::array<int64_t, 3> sizes3D = { domain_size + 2*halo_width,
-                                           domain_size + 2*halo_width,
-                                           domain_height + 2*halo_width };
+  const int64_t size1D = domain_size + 2 * halo_width;
+  const std::array<int64_t, 3> sizes3D = {domain_size + 2 * halo_width, domain_size + 2 * halo_width,
+                                          domain_height + 2 * halo_width};
 
   // allocate the storage
   Storage3D uin = allocateStorage(sizes3D);
@@ -38,7 +38,6 @@ int main(int argc, char **argv) {
   Storage3D uout = allocateStorage(sizes3D);
   Storage3D vout = allocateStorage(sizes3D);
   Storage3D wk = allocateStorage(sizes3D);
-
 
   ElementType dt2 = 0.1;
 
@@ -53,7 +52,10 @@ int main(int argc, char **argv) {
   initValue(uout, 0.0, domain_size, domain_height);
   initValue(vout, 0.0, domain_size, domain_height);
 
+  timer.start("p_grad_c");
   p_grad_c(uout, vout, uin, vin, rdxc, rdyc, delpc, gz, pkc, wk, dt2);
+  timer.stop("p_grad_c");
+  timer.show_all();
 
   // free the storage
   freeStorage(uin);

@@ -15,28 +15,28 @@ typedef double ElementType;
 
 // program times the execution of the linked program and times the result
 int main(int argc, char **argv) {
-
-  if(argc == 3) {
-      domain_size = atoi(argv[1]);
-      domain_height = atoi(argv[2]);
+  if (argc == 3) {
+    domain_size = atoi(argv[1]);
+    domain_height = atoi(argv[2]);
   } else if (argc == 1) {
   } else {
-      std::cout << "Either provide the domain size and domain height like this \"./kernel 128 60\" or do not provide any arguments at all in which case the program is ran with domain size 64 and domain heigh 60" << std::endl;
-      exit(1);
+    std::cout << "Either provide the domain size and domain height like this \"./kernel 128 60\" or do not provide any "
+                 "arguments at all in which case the program is ran with domain size 64 and domain heigh 60"
+              << std::endl;
+    exit(1);
   }
 
-  const std::array<int64_t, 3> sizes3D = { domain_size + 2*halo_width,
-                                           domain_size + 2*halo_width,
-                                           domain_height + 2*halo_width };
+  const std::array<int64_t, 3> sizes3D = {domain_size + 2 * halo_width, domain_size + 2 * halo_width,
+                                          domain_height + 2 * halo_width};
 
   // allocate the storage
-  Storage3D q    = allocateStorage(sizes3D);
-  Storage3D crx  = allocateStorage(sizes3D);
-  Storage3D cry  = allocateStorage(sizes3D);
+  Storage3D q = allocateStorage(sizes3D);
+  Storage3D crx = allocateStorage(sizes3D);
+  Storage3D cry = allocateStorage(sizes3D);
   Storage3D ra_x = allocateStorage(sizes3D);
   Storage3D ra_y = allocateStorage(sizes3D);
-  Storage3D xfx  = allocateStorage(sizes3D);
-  Storage3D yfx  = allocateStorage(sizes3D);
+  Storage3D xfx = allocateStorage(sizes3D);
+  Storage3D yfx = allocateStorage(sizes3D);
   Storage3D area = allocateStorage(sizes3D);
 
   Storage3D q_i = allocateStorage(sizes3D);
@@ -46,12 +46,12 @@ int main(int argc, char **argv) {
   Storage3D fy1 = allocateStorage(sizes3D);
   Storage3D fy2 = allocateStorage(sizes3D);
 
-  Storage3D fxx  = allocateStorage(sizes3D);
-  Storage3D fyy  = allocateStorage(sizes3D);
+  Storage3D fxx = allocateStorage(sizes3D);
+  Storage3D fyy = allocateStorage(sizes3D);
   Storage3D al = allocateStorage(sizes3D);
   Storage3D almq = allocateStorage(sizes3D);
-  Storage3D br   = allocateStorage(sizes3D);
-  Storage3D b0   = allocateStorage(sizes3D);
+  Storage3D br = allocateStorage(sizes3D);
+  Storage3D b0 = allocateStorage(sizes3D);
   Storage3D smt5 = allocateStorage(sizes3D);
 
   fillMath(1.0, 3.3, 1.5, 1.5, 2.0, 4.0, q, domain_size, domain_height);
@@ -70,7 +70,10 @@ int main(int argc, char **argv) {
   initValue(fy1, -1.0, domain_size, domain_height);
   initValue(fy2, -1.0, domain_size, domain_height);
 
+  timer.start("fvtp2d");
   fvtp2d(q_i, q_j, fx1, fx2, fy1, fy2, q, crx, cry, ra_x, ra_y, xfx, yfx, area, fxx, fyy, al, almq, br, b0, smt5);
+  timer.stop("fvtp2d");
+  timer.show_all();
 
   // free the storage
   freeStorage(q);
