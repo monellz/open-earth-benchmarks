@@ -4,6 +4,7 @@
 int64_t domain_size = 64;
 int64_t domain_height = 60;
 int64_t halo_width = 4;
+int64_t count = 1000;
 
 typedef double ElementType;
 
@@ -44,9 +45,11 @@ int main(int argc, char **argv) {
 
   std::cout << "-> starting verification" << std::endl;
 
-  timer.start("hdiffsa");
-  hdiffsa(in, mask, out, crlato, crlatu, lap, flx, fly);
-  timer.stop("hdiffsa");
+  while (count--) {
+    timer.start("hdiffsa");
+    hdiffsa(in, mask, out, crlato, crlatu, lap, flx, fly);
+    timer.stop("hdiffsa");
+  }
   timer.show_all();
 
   // free the storage

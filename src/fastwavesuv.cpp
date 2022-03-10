@@ -4,6 +4,7 @@
 int64_t domain_size = 64;
 int64_t domain_height = 60;
 int64_t halo_width = 4;
+int64_t count = 1000;
 
 typedef double ElementType;
 
@@ -60,9 +61,11 @@ int main(int argc, char **argv) {
   initValue(uout, 0.0, domain_size, domain_height);
   initValue(vout, 0.0, domain_size, domain_height);
 
-  timer.start("fastwavesuv");
-  fastwavesuv(uout, vout, uin, vin, utens, vtens, wgtfac, ppuv, hhl, rho, fx, ppgk, ppgc, ppgu, ppgv, edadlat, dt);
-  timer.stop("fastwavesuv");
+  while (count--) {
+    timer.start("fastwavesuv");
+    fastwavesuv(uout, vout, uin, vin, utens, vtens, wgtfac, ppuv, hhl, rho, fx, ppgk, ppgc, ppgu, ppgv, edadlat, dt);
+    timer.stop("fastwavesuv");
+  }
   timer.show_all();
 
   // free the storage

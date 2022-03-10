@@ -4,6 +4,7 @@
 int64_t domain_size = 64;
 int64_t domain_height = 60;
 int64_t halo_width = 4;
+int64_t count = 1000;
 
 typedef double ElementType;
 
@@ -62,10 +63,12 @@ int main(int argc, char **argv) {
   initValue(T_sqr_s, 0.0, domain_size, domain_height);
   initValue(S_sqr_uv, 0.0, domain_size, domain_height);
 
-  timer.start("hdiffsmag");
-  hdiffsmag(uout, vout, uin, vin, mask, crlavo, crlavu, crlato, crlatu, acrlat0, T_sqr_s, S_sqr_uv, eddlat, eddlon,
-            tau_smag, weight_smag);
-  timer.stop("hdiffsmag");
+  while (count--) {
+    timer.start("hdiffsmag");
+    hdiffsmag(uout, vout, uin, vin, mask, crlavo, crlavu, crlato, crlatu, acrlat0, T_sqr_s, S_sqr_uv, eddlat, eddlon,
+              tau_smag, weight_smag);
+    timer.stop("hdiffsmag");
+  }
   timer.show_all();
 
   // free the storage

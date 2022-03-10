@@ -4,6 +4,7 @@
 int64_t domain_size = 64;
 int64_t domain_height = 60;
 int64_t halo_width = 4;
+int64_t count = 1000;
 
 typedef double ElementType;
 
@@ -52,9 +53,11 @@ int main(int argc, char **argv) {
   initValue(uout, 0.0, domain_size, domain_height);
   initValue(vout, 0.0, domain_size, domain_height);
 
-  timer.start("p_grad_c");
-  p_grad_c(uout, vout, uin, vin, rdxc, rdyc, delpc, gz, pkc, wk, dt2);
-  timer.stop("p_grad_c");
+  while (count--) {
+    timer.start("p_grad_c");
+    p_grad_c(uout, vout, uin, vin, rdxc, rdyc, delpc, gz, pkc, wk, dt2);
+    timer.stop("p_grad_c");
+  }
   timer.show_all();
 
   // free the storage

@@ -4,6 +4,7 @@
 int64_t domain_size = 64;
 int64_t domain_height = 60;
 int64_t halo_width = 4;
+int64_t count = 1000;
 
 typedef double ElementType;
 
@@ -70,9 +71,11 @@ int main(int argc, char **argv) {
   initValue(fy1, -1.0, domain_size, domain_height);
   initValue(fy2, -1.0, domain_size, domain_height);
 
-  timer.start("fvtp2d");
-  fvtp2d(q_i, q_j, fx1, fx2, fy1, fy2, q, crx, cry, ra_x, ra_y, xfx, yfx, area, fxx, fyy, al, almq, br, b0, smt5);
-  timer.stop("fvtp2d");
+  while (count--) {
+    timer.start("fvtp2d");
+    fvtp2d(q_i, q_j, fx1, fx2, fy1, fy2, q, crx, cry, ra_x, ra_y, xfx, yfx, area, fxx, fyy, al, almq, br, b0, smt5);
+    timer.stop("fvtp2d");
+  }
   timer.show_all();
 
   // free the storage

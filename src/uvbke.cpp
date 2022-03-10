@@ -4,6 +4,7 @@
 int64_t domain_size = 64;
 int64_t domain_height = 60;
 int64_t halo_width = 4;
+int64_t count = 1000;
 
 typedef double ElementType;
 
@@ -46,9 +47,11 @@ int main(int argc, char **argv) {
   initValue(ub, -1.0, domain_size, domain_height);
   initValue(vb, -1.0, domain_size, domain_height);
 
-  timer.start("uvbke");
-  uvbke(ub, vb, uc, vc, cosa, rsina);
-  timer.stop("uvbke");
+  while (count--) {
+    timer.start("uvbke");
+    uvbke(ub, vb, uc, vc, cosa, rsina);
+    timer.stop("uvbke");
+  }
   timer.show_all();
 
   // free the storage

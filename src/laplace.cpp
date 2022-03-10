@@ -4,6 +4,7 @@
 int64_t domain_size = 64;
 int64_t domain_height = 60;
 int64_t halo_width = 4;
+int64_t count = 1000;
 
 typedef double ElementType;
 
@@ -33,9 +34,11 @@ int main(int argc, char **argv) {
   initValue(out, 0.0, domain_size, domain_height);
 
   // computing the reference version
-  timer.start("laplace");
-  laplace(in, out);
-  timer.stop("laplace");
+  while (count--) {
+    timer.start("laplace");
+    laplace(in, out);
+    timer.stop("laplace");
+  }
   timer.show_all();
 
   // free the storage
