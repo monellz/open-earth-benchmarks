@@ -82,6 +82,14 @@ int main(int argc, char **argv) {
       }
       break;
     }
+    case PARTIAL_FUSION: {
+      while (count--) {
+        timer.start("fastwavesuv partialfusion");
+        fastwavesuv_partialfusion(uout, vout, uin, vin, utens, vtens, wgtfac, ppuv, hhl, rho, fx, ppgk, ppgc, ppgu, ppgv, edadlat, dt);
+        timer.stop("fastwavesuv partialfusion");
+      }
+      break;
+    }
     case OPENMP: {
       while (count--) {
         timer.start("fastwavesuv openmp");
