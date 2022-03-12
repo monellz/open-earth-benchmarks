@@ -74,4 +74,44 @@ void nh_p_grad_fullfusion(Storage3D& uout, Storage3D& vout, const Storage3D& uin
   }
 }
 
+void nh_p_grad_partialfusion(Storage3D& uout, Storage3D& vout, const Storage3D& uin, const Storage3D& vin, const Storage3D& rdx,
+               const Storage3D& rdy, const Storage3D& gz, const Storage3D& pp, const Storage3D& pk3,
+               const Storage3D& wk1, Storage3D& wk, Storage3D& du, Storage3D& dv, const ElementType dt) {
+  for (int64_t k = 0; k < domain_height; ++k) {
+    for (int64_t i = 0; i < domain_size; ++i) {
+      for (int64_t j = 0; j < domain_size; ++j) {
+        auto wk_ijk = (pk3(i, j, k + 1) - pk3(i, j, k));
+        auto wk_i1jk = (pk3(i + 1, j, k + 1) - pk3(i + 1, j, k));
+        auto _du = ((dt / (wk_ijk + wk_i1jk)) *
+                       (((gz(i, j, k + 1) - gz(i + 1, j, k)) * (pk3(i + 1, j, k + 1) - pk3(i, j, k))) +
+                        ((gz(i, j, k) - gz(i + 1, j, k + 1)) * (pk3(i, j, k + 1) - pk3(i + 1, j, k)))));
+        uout(i, j, k) = (((uin(i, j, k) + _du) +
+                          ((dt / (wk1(i, j, k) + wk1(i + 1, j, k))) *
+                           (((gz(i, j, k + 1) - gz(i + 1, j, k)) * (pp(i + 1, j, k + 1) - pp(i, j, k))) +
+                            ((gz(i, j, k) - gz(i + 1, j, k + 1)) * (pp(i, j, k + 1) - pp(i + 1, j, k)))))) *
+                         rdx(i, j, k));
+      }
+    }
+  }
+
+  for (int64_t k = 0; k < domain_height; ++k) {
+    for (int64_t i = 0; i < domain_size; ++i) {
+      for (int64_t j = 0; j < domain_size; ++j) {
+        auto wk_ijk = (pk3(i, j, k + 1) - pk3(i, j, k));
+        auto wk_ij1k = (pk3(i, j + 1, k + 1) - pk3(i, j + 1, k));
+        auto _dv = ((dt / (wk_ijk + wk_ij1k)) *
+                       (((gz(i, j, k + 1) - gz(i, j + 1, k)) * (pk3(i, j + 1, k + 1) - pk3(i, j, k))) +
+                        ((gz(i, j, k) - gz(i, j + 1, k + 1)) * (pk3(i, j, k + 1) - pk3(i, j + 1, k)))));
+        vout(i, j, k) = (((vin(i, j, k) + _dv) +
+                          ((dt / (wk1(i, j, k) + wk1(i, j + 1, k))) *
+                           (((gz(i, j, k + 1) - gz(i, j + 1, k)) * (pp(i, j + 1, k + 1) - pp(i, j, k))) +
+                            ((gz(i, j, k) - gz(i, j + 1, k + 1)) * (pp(i, j, k + 1) - pp(i, j + 1, k)))))) *
+                         rdy(i, j, k));
+      }
+    }
+  }
+
+}
+
+
 #endif  // NH_P_GRAD_H
