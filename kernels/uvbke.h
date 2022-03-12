@@ -1,7 +1,6 @@
 #ifndef UVBKE_H
 #define UVBKE_H
 
-#ifndef MANUAL_FUSION
 void uvbke(Storage3D& ub, Storage3D& vb, const Storage3D& uc, const Storage3D& vc, const Storage3D& cosa,
            const Storage3D& rsina) {
   for (int64_t k = 0; k < domain_height; ++k) {
@@ -23,8 +22,7 @@ void uvbke(Storage3D& ub, Storage3D& vb, const Storage3D& uc, const Storage3D& v
   }
 }
 
-#else
-void uvbke(Storage3D& ub, Storage3D& vb, const Storage3D& uc, const Storage3D& vc, const Storage3D& cosa,
+void uvbke_fullfusion(Storage3D& ub, Storage3D& vb, const Storage3D& uc, const Storage3D& vc, const Storage3D& cosa,
            const Storage3D& rsina) {
   for (int64_t k = 0; k < domain_height; ++k) {
     for (int64_t i = 0; i < domain_size; ++i) {
@@ -38,7 +36,5 @@ void uvbke(Storage3D& ub, Storage3D& vb, const Storage3D& uc, const Storage3D& v
     }
   }
 }
-
-#endif
 
 #endif  // UVBKE_H

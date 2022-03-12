@@ -38,8 +38,6 @@ ElementType advectionDriver(const Storage3D field, const int64_t i, const int64_
   return eddlat * result_x + eddlon * result_y;
 }
 
-#ifndef MANUAL_FUSION
-
 void hadvuv5th(Storage3D& uout, Storage3D& vout, const Storage3D& uin, const Storage3D& vin, const Storage1D& acrlat0,
                const Storage1D& acrlat1, const Storage1D& tgrlatda0, const Storage1D& tgrlatda1, Storage3D& uatupos,
                Storage3D& vatupos, Storage3D& uatvpos, Storage3D& vatvpos, Storage3D& uavg, Storage3D& vavg,
@@ -117,8 +115,7 @@ void hadvuv5th(Storage3D& uout, Storage3D& vout, const Storage3D& uin, const Sto
   }
 }
 
-#else
-void hadvuv5th(Storage3D& uout, Storage3D& vout, const Storage3D& uin, const Storage3D& vin, const Storage1D& acrlat0,
+void hadvuv5th_fullfusion(Storage3D& uout, Storage3D& vout, const Storage3D& uin, const Storage3D& vin, const Storage1D& acrlat0,
                const Storage1D& acrlat1, const Storage1D& tgrlatda0, const Storage1D& tgrlatda1, Storage3D& uatupos,
                Storage3D& vatupos, Storage3D& uatvpos, Storage3D& vatvpos, Storage3D& uavg, Storage3D& vavg,
                Storage3D& ures, Storage3D& vres, const ElementType eddlat, const ElementType eddlon) {
@@ -150,7 +147,5 @@ void hadvuv5th(Storage3D& uout, Storage3D& vout, const Storage3D& uin, const Sto
     }
   }
 }
-
-#endif
 
 #endif  // HADVUV5TH_H

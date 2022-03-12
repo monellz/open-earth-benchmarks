@@ -1,7 +1,6 @@
 #ifndef HDIFFSA_H
 #define HDIFFSA_H
 
-#ifndef MANUAL_FUSION
 void hdiffsa(Storage3D& out, const Storage3D& in, const Storage3D& mask, const Storage1D& crlato,
              const Storage1D& crlatu, Storage3D& lap, Storage3D& flx, Storage3D& fly) {
   for (int64_t k = 0; k < domain_height; ++k) {
@@ -34,8 +33,8 @@ void hdiffsa(Storage3D& out, const Storage3D& in, const Storage3D& mask, const S
     }
   }
 }
-#else
-void hdiffsa(Storage3D& out, const Storage3D& in, const Storage3D& mask, const Storage1D& crlato,
+
+void hdiffsa_fullfusion(Storage3D& out, const Storage3D& in, const Storage3D& mask, const Storage1D& crlato,
              const Storage1D& crlatu, Storage3D& lap, Storage3D& flx, Storage3D& fly) {
   for (int64_t k = 0; k < domain_height; ++k) {
     for (int64_t i = -1; i < domain_size + 1; ++i) {
@@ -63,7 +62,5 @@ void hdiffsa(Storage3D& out, const Storage3D& in, const Storage3D& mask, const S
     }
   }
 }
-
-#endif
 
 #endif  // HDIFFSA_H

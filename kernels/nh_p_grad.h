@@ -1,7 +1,6 @@
 #ifndef NH_P_GRAD_H
 #define NH_P_GRAD_H
 
-#ifndef MANUAL_FUSION
 void nh_p_grad(Storage3D& uout, Storage3D& vout, const Storage3D& uin, const Storage3D& vin, const Storage3D& rdx,
                const Storage3D& rdy, const Storage3D& gz, const Storage3D& pp, const Storage3D& pk3,
                const Storage3D& wk1, Storage3D& wk, Storage3D& du, Storage3D& dv, const ElementType dt) {
@@ -44,8 +43,7 @@ void nh_p_grad(Storage3D& uout, Storage3D& vout, const Storage3D& uin, const Sto
   }
 }
 
-#else
-void nh_p_grad(Storage3D& uout, Storage3D& vout, const Storage3D& uin, const Storage3D& vin, const Storage3D& rdx,
+void nh_p_grad_fullfusion(Storage3D& uout, Storage3D& vout, const Storage3D& uin, const Storage3D& vin, const Storage3D& rdx,
                const Storage3D& rdy, const Storage3D& gz, const Storage3D& pp, const Storage3D& pk3,
                const Storage3D& wk1, Storage3D& wk, Storage3D& du, Storage3D& dv, const ElementType dt) {
   for (int64_t k = 0; k < domain_height; ++k) {
@@ -75,7 +73,5 @@ void nh_p_grad(Storage3D& uout, Storage3D& vout, const Storage3D& uin, const Sto
     }
   }
 }
-
-#endif
 
 #endif  // NH_P_GRAD_H

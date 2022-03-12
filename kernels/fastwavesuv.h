@@ -1,7 +1,6 @@
 #ifndef FASTWAVESUV_H
 #define FASTWAVESUV_H
 
-#ifndef MANUAL_FUSION
 void fastwavesuv(Storage3D& uout, Storage3D& vout, const Storage3D& uin, const Storage3D& vin, const Storage3D& utens,
                  const Storage3D& vtens, const Storage3D& wgtfac, const Storage3D& ppuv, const Storage3D& hhl,
                  const Storage3D& rho, const Storage1D& fx, Storage3D& ppgk, Storage3D& ppgc, Storage3D& ppgu,
@@ -65,8 +64,7 @@ void fastwavesuv(Storage3D& uout, Storage3D& vout, const Storage3D& uin, const S
   }
 }
 
-#else
-void fastwavesuv(Storage3D& uout, Storage3D& vout, const Storage3D& uin, const Storage3D& vin, const Storage3D& utens,
+void fastwavesuv_fullfusion(Storage3D& uout, Storage3D& vout, const Storage3D& uin, const Storage3D& vin, const Storage3D& utens,
                  const Storage3D& vtens, const Storage3D& wgtfac, const Storage3D& ppuv, const Storage3D& hhl,
                  const Storage3D& rho, const Storage1D& fx, Storage3D& ppgk, Storage3D& ppgc, Storage3D& ppgu,
                  Storage3D& ppgv, const ElementType edadlat, const ElementType dt) {
@@ -103,6 +101,5 @@ void fastwavesuv(Storage3D& uout, Storage3D& vout, const Storage3D& uin, const S
     }
   }
 }
-#endif
 
 #endif  // FASTWAVESUV_H

@@ -1,7 +1,6 @@
 #ifndef HDIFFSMAG_H
 #define HDIFFSMAG_H
 
-#ifndef MANUAL_FUSION
 void hdiffsmag(Storage3D& uout, Storage3D& vout, const Storage3D& uin, const Storage3D& vin, const Storage3D& mask,
                const Storage1D& crlavo, const Storage1D& crlavu, const Storage1D& crlato, const Storage1D& crlatu,
                const Storage1D& acrlat0, Storage3D& T_sqr_s, Storage3D& S_sqr_uv, const ElementType eddlat,
@@ -72,8 +71,7 @@ void hdiffsmag(Storage3D& uout, Storage3D& vout, const Storage3D& uin, const Sto
   }
 }
 
-#else
-void hdiffsmag(Storage3D& uout, Storage3D& vout, const Storage3D& uin, const Storage3D& vin, const Storage3D& mask,
+void hdiffsmag_fullfusion(Storage3D& uout, Storage3D& vout, const Storage3D& uin, const Storage3D& vin, const Storage3D& mask,
                const Storage1D& crlavo, const Storage1D& crlavu, const Storage1D& crlato, const Storage1D& crlatu,
                const Storage1D& acrlat0, Storage3D& T_sqr_s, Storage3D& S_sqr_uv, const ElementType eddlat,
                const ElementType eddlon, const ElementType tau_smag, const ElementType weight_smag) {
@@ -152,7 +150,5 @@ void hdiffsmag(Storage3D& uout, Storage3D& vout, const Storage3D& uin, const Sto
     }
   }
 }
-
-#endif
 
 #endif  // HDIFFSMAG_H

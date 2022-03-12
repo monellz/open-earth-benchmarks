@@ -1,7 +1,6 @@
 #ifndef FVTP2D_H
 #define FVTP2D_H
 
-#ifndef MANUAL_FUSION
 void fvtp2d(Storage3D& q_i, Storage3D& q_j, Storage3D& fx1, Storage3D& fx2, Storage3D& fy1, Storage3D& fy2,
             const Storage3D& q, const Storage3D& crx, const Storage3D& cry, const Storage3D& ra_x,
             const Storage3D& ra_y, const Storage3D& xfx, const Storage3D& yfx, const Storage3D& area, Storage3D& fxx,
@@ -177,8 +176,7 @@ void fvtp2d(Storage3D& q_i, Storage3D& q_j, Storage3D& fx1, Storage3D& fx2, Stor
   }
 }
 
-#else
-void fvtp2d(Storage3D& q_i, Storage3D& q_j, Storage3D& fx1, Storage3D& fx2, Storage3D& fy1, Storage3D& fy2,
+void fvtp2d_fullfusion(Storage3D& q_i, Storage3D& q_j, Storage3D& fx1, Storage3D& fx2, Storage3D& fy1, Storage3D& fy2,
             const Storage3D& q, const Storage3D& crx, const Storage3D& cry, const Storage3D& ra_x,
             const Storage3D& ra_y, const Storage3D& xfx, const Storage3D& yfx, const Storage3D& area, Storage3D& fxx,
             Storage3D& fyy, Storage3D& al, Storage3D& almq, Storage3D& br, Storage3D& b0, Storage3D& smt5) {
@@ -336,7 +334,5 @@ void fvtp2d(Storage3D& q_i, Storage3D& q_j, Storage3D& fx1, Storage3D& fx2, Stor
     }
   }
 }
-
-#endif
 
 #endif  // FVTP2D_H

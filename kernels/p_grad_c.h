@@ -1,7 +1,6 @@
 #ifndef P_GRAD_C_H
 #define P_GRAD_C_H
 
-#ifndef MANUAL_FUSION
 void p_grad_c(Storage3D& uout, Storage3D& vout, const Storage3D& uin, const Storage3D& vin, const Storage3D& rdxc,
               const Storage3D& rdyc, const Storage3D& delpc, const Storage3D& gz, const Storage3D& pkc, Storage3D& wk,
               const ElementType dt2) {
@@ -27,8 +26,7 @@ void p_grad_c(Storage3D& uout, Storage3D& vout, const Storage3D& uin, const Stor
   }
 }
 
-#else
-void p_grad_c(Storage3D& uout, Storage3D& vout, const Storage3D& uin, const Storage3D& vin, const Storage3D& rdxc,
+void p_grad_c_fullfusion(Storage3D& uout, Storage3D& vout, const Storage3D& uin, const Storage3D& vin, const Storage3D& rdxc,
               const Storage3D& rdyc, const Storage3D& delpc, const Storage3D& gz, const Storage3D& pkc, Storage3D& wk,
               const ElementType dt2) {
   for (int64_t k = 0; k < domain_height; ++k) {
@@ -49,6 +47,5 @@ void p_grad_c(Storage3D& uout, Storage3D& vout, const Storage3D& uin, const Stor
     }
   }
 }
-#endif
 
 #endif  // P_GRAD_C_H

@@ -7,7 +7,10 @@
 #include <iostream>
 #include <unordered_map>
 
-#define MANUAL_FUSION
+#define DEFAULT 0
+#define FULL_FUSION 1
+#define PARTIAL_FUSION 2
+#define OPENMP 3
 
 #define get_elapsed_time_ms(_s, _e) (1000.0 * (_e.tv_sec - _s.tv_sec) + (_e.tv_usec - _s.tv_usec) / 1000.0)
 
