@@ -63,6 +63,14 @@ int main(int argc, char **argv) {
       }
       break;
     }
+    case OPENMP: {
+      while (count--) {
+        timer.start("laplace openmp");
+        laplace_openmp(in, out);
+        timer.stop("laplace openmp");
+      }
+      break;
+    }
     default: {
       std::cout << "Unknown ALGO" << std::endl;
     }

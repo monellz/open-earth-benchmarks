@@ -82,6 +82,24 @@ int main(int argc, char **argv) {
       }
       break;
     }
+    case PARTIAL_FUSION: {
+      while (count--) {
+        timer.start("hadvuv5th partialfusion");
+        hadvuv5th_partialfusion(uout, vout, uin, vin, acrlat0, acrlat1, tgrlatda0, tgrlatda1, uatupos, vatupos, uatvpos, vatvpos, uavg,
+                  vavg, ures, vres, eddlat, eddlon);
+        timer.stop("hadvuv5th partialfusion");
+      }
+      break;
+    }
+    case OPENMP: {
+      while (count--) {
+        timer.start("hadvuv5th openmp");
+        hadvuv5th_openmp(uout, vout, uin, vin, acrlat0, acrlat1, tgrlatda0, tgrlatda1, uatupos, vatupos, uatvpos, vatvpos, uavg,
+                  vavg, ures, vres, eddlat, eddlon);
+        timer.stop("hadvuv5th openmp");
+      }
+      break;
+    }
     default: {
       std::cout << "Unknown ALGO" << std::endl;
     }

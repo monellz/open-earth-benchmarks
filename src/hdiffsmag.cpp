@@ -95,6 +95,15 @@ int main(int argc, char **argv) {
       }
       break;
     }
+    case OPENMP: {
+      while (count--) {
+        timer.start("hdiffsmag openmp");
+        hdiffsmag_openmp(uout, vout, uin, vin, mask, crlavo, crlavu, crlato, crlatu, acrlat0, T_sqr_s, S_sqr_uv, eddlat, eddlon,
+                  tau_smag, weight_smag);
+        timer.stop("hdiffsmag openmp");
+      }
+      break;
+    }
     default: {
       std::cout << "Unknown ALGO" << std::endl;
     }

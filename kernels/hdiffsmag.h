@@ -202,5 +202,64 @@ void hdiffsmag_partialfusion(Storage3D& uout, Storage3D& vout, const Storage3D& 
   }
 }
 
+void hdiffsmag_openmp(Storage3D& uout, Storage3D& vout, const Storage3D& uin, const Storage3D& vin, const Storage3D& mask,
+               const Storage1D& crlavo, const Storage1D& crlavu, const Storage1D& crlato, const Storage1D& crlatu,
+               const Storage1D& acrlat0, Storage3D& T_sqr_s, Storage3D& S_sqr_uv, const ElementType eddlat,
+               const ElementType eddlon, const ElementType tau_smag, const ElementType weight_smag) {
+  #pragma omp parallel for
+  for (int64_t i = 0; i < domain_size; i++) {
+    for (int64_t j = 0; j < domain_size; j++) {
+      for (int64_t k = 0; k < domain_height; k++) {
+        auto T_s_ijk = (vin(i, j - 1, k) - vin(i, j, k)) * eddlat * EARTH_RADIUS_RECIP - (uin(i - 1, j, k) - uin(i, j, k)) * acrlat0(j) * eddlon;
+        auto T_sqr_s_ijk = T_s_ijk * T_s_ijk;
+        auto T_s_i1jk = (vin(i + 1, j - 1, k) - vin(i + 1, j, k)) * eddlat * EARTH_RADIUS_RECIP - (uin(i, j, k) - uin(i + 1, j, k)) * acrlat0(j) * eddlon;
+        auto T_sqr_s_i1jk = T_s_i1jk * T_s_i1jk;
+        auto T_s_ij1k = (vin(i, j, k) - vin(i, j + 1, k)) * eddlat * EARTH_RADIUS_RECIP - (uin(i - 1, j + 1, k) - uin(i, j + 1, k)) * acrlat0(j + 1) * eddlon;
+        auto T_sqr_s_ij1k = T_s_ij1k * T_s_ij1k;
+
+
+        auto S_uv_ijk = (uin(i, j + 1, k) - uin(i, j, k)) * eddlat * EARTH_RADIUS_RECIP + (vin(i + 1, j, k) - vin(i, j, k)) * acrlat0(j) * eddlon;
+        auto S_sqr_uv_ijk = S_uv_ijk * S_uv_ijk;
+        auto S_uv_im1jk = (uin(i - 1, j + 1, k) - uin(i - 1, j, k)) * eddlat * EARTH_RADIUS_RECIP + (vin(i, j, k) - vin(i - 1, j, k)) * acrlat0(j) * eddlon;
+        auto S_sqr_uv_im1jk = S_uv_im1jk * S_uv_im1jk;
+        auto S_uv_ijm1k = (uin(i, j, k) - uin(i, j - 1, k)) * eddlat * EARTH_RADIUS_RECIP + (vin(i + 1, j - 1, k) - vin(i, j - 1, k)) * acrlat0(j - 1) * eddlon;
+        auto S_sqr_uv_ijm1k = S_uv_ijm1k * S_uv_ijm1k;
+
+
+        const ElementType hdweight = weight_smag * mask(i, j, k);
+
+        // I direction
+        // valid on [1:I-1,1:J-1,O:K]
+        ElementType smag_u = tau_smag * std::sqrt(ElementType(0.5) * (T_sqr_s_i1jk + T_sqr_s_ijk) +
+                                                  ElementType(0.5) * (S_sqr_uv_ijm1k + S_sqr_uv_ijk)) -
+                             hdweight;
+        smag_u = std::min(ElementType(0.5), std::max(ElementType(0.0), smag_u));
+
+        // valid on [1:I-1,1:J-1,0:K]
+        const ElementType lapu = uin(i + 1, j, k) + uin(i - 1, j, k) - ElementType(2.0) * uin(i, j, k) +
+                                 crlato(j) * (uin(i, j + 1, k) - uin(i, j, k)) +
+                                 crlatu(j) * (uin(i, j - 1, k) - uin(i, j, k));
+
+        // valid on [1:I-1,1:J-1,0:K]
+        uout(i, j, k) = uin(i, j, k) + smag_u * lapu;
+
+        // J direction
+        // valid on [1:I-1,1:J-1,0:K]
+        ElementType smag_v = tau_smag * std::sqrt(ElementType(0.5) * (T_sqr_s_ij1k + T_sqr_s_ijk) +
+                                                  ElementType(0.5) * (S_sqr_uv_im1jk + S_sqr_uv_ijk)) -
+                             hdweight;
+        smag_v = std::min(ElementType(0.5), std::max(ElementType(0.0), smag_v));
+
+        // valid on [1:I-1,1:J-1,0:K]
+        const ElementType lapv = vin(i + 1, j, k) + vin(i - 1, j, k) - ElementType(2.0) * vin(i, j, k) +
+                                 crlavo(j) * (vin(i, j + 1, k) - vin(i, j, k)) +
+                                 crlavu(j) * (vin(i, j - 1, k) - vin(i, j, k));
+
+        // valid on [1:I-1,1:J-1,0:K]
+        vout(i, j, k) = vin(i, j, k) + smag_v * lapv;
+      }
+    }
+  }
+}
 
 #endif  // HDIFFSMAG_H

@@ -1,20 +1,27 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.3)
 
 project(OpenEarthBenchmarks VERSION 1.0
-        DESCRIPTION "Open Earth Benchmarks"
-        LANGUAGES CXX)
+  DESCRIPTION "Open Earth Benchmarks"
+  LANGUAGES CXX)
+
+find_package(OpenMP)
 
 include_directories(include)
 include_directories(kernels)
 
 add_compile_options(-O3)
-add_executable(laplace src/laplace.cpp)
-add_executable(hdiffsa src/hdiffsa.cpp)
-add_executable(hdiffsmag src/hdiffsmag.cpp)
-add_executable(hadvuv src/hadvuv.cpp)
-add_executable(hadvuv5th src/hadvuv5th.cpp)
-add_executable(fastwavesuv src/fastwavesuv.cpp)
-add_executable(uvbke src/uvbke.cpp)
-add_executable(p_grad_c src/p_grad_c.cpp)
-add_executable(nh_p_grad src/nh_p_grad.cpp)
-add_executable(fvtp2d src/fvtp2d.cpp)
+function(add_example example_name)
+  add_executable(${example_name} src/${example_name}.cpp)
+  target_link_libraries(${example_name} PUBLIC OpenMP::OpenMP_CXX)
+endfunction()
+
+add_example(laplace)
+add_example(hdiffsa)
+add_example(hdiffsmag)
+add_example(hadvuv)
+add_example(hadvuv5th)
+add_example(fastwavesuv)
+add_example(uvbke)
+add_example(p_grad_c)
+add_example(nh_p_grad)
+add_example(fvtp2d)

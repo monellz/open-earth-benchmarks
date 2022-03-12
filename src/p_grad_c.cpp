@@ -82,6 +82,15 @@ int main(int argc, char **argv) {
       }
       break;
     }
+    case OPENMP: {
+      while (count--) {
+        timer.start("p_grad_c openmp");
+        p_grad_c_openmp(uout, vout, uin, vin, rdxc, rdyc, delpc, gz, pkc, wk, dt2);
+        timer.stop("p_grad_c openmp");
+      }
+      break;
+    }
+
     default: {
       std::cout << "Unknown ALGO" << std::endl;
     }

@@ -68,6 +68,22 @@ int main(int argc, char **argv) {
       }
       break;
     }
+    case PARTIAL_FUSION: {
+      while (count--) {
+        timer.start("uvbke partialfusion");
+        uvbke_partialfusion(ub, vb, uc, vc, cosa, rsina);
+        timer.stop("uvbke partialfusion");
+      }
+      break;
+    }
+    case OPENMP: {
+      while (count--) {
+        timer.start("uvbke openmp");
+        uvbke_openmp(ub, vb, uc, vc, cosa, rsina);
+        timer.stop("uvbke openmp");
+      }
+      break;
+    }
     default: {
       std::cout << "Unknown ALGO" << std::endl;
     }

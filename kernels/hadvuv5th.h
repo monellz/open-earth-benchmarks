@@ -123,8 +123,33 @@ void hadvuv5th_fullfusion(Storage3D& uout, Storage3D& vout, const Storage3D& uin
     for (int64_t i = 0; i < domain_size; ++i) {
       for (int64_t j = 0; j < domain_size; ++j) {
         auto _uatupos = (ElementType(1.0) / ElementType(3.0)) * (uin(i - 1, j, k) + uin(i, j, k) + uin(i + 1, j, k));
-        auto _vatupos =
-            ElementType(0.25) * (vin(i + 1, j, k) + vin(i + 1, j - 1, k) + vin(i, j, k) + vin(i, j - 1, k));
+        auto _vatupos = ElementType(0.25) * (vin(i + 1, j, k) + vin(i + 1, j - 1, k) + vin(i, j, k) + vin(i, j - 1, k));
+        auto _uavg = acrlat0(j) * _uatupos;
+        auto _vavg = EARTH_RADIUS_RECIP * _vatupos;
+        auto _ures = advectionDriver(uin, i, j, k, _uavg, _vavg, eddlat, eddlon);
+        uout(i, j, k) = _ures + tgrlatda0(j) * uin(i, j, k) * _vatupos;
+
+        auto _uatvpos = ElementType(0.25) * (uin(i - 1, j, k) + uin(i, j, k) + uin(i, j + 1, k) + uin(i - 1, j + 1, k));
+        auto _vatvpos = ElementType(1.0) / ElementType(3.0) * (vin(i, j - 1, k) + vin(i, j, k) + vin(i, j + 1, k));
+        _uavg = acrlat1(j) * _uatvpos;
+        _vavg = EARTH_RADIUS_RECIP * _vatvpos;
+        auto _vres = advectionDriver(vin, i, j, k, _uavg, _vavg, eddlat, eddlon);
+        vout(i, j, k) = _vres - tgrlatda1(j) * _uatvpos * _uatvpos;
+      }
+    }
+  }
+}
+
+
+void hadvuv5th_partialfusion(Storage3D& uout, Storage3D& vout, const Storage3D& uin, const Storage3D& vin, const Storage1D& acrlat0,
+               const Storage1D& acrlat1, const Storage1D& tgrlatda0, const Storage1D& tgrlatda1, Storage3D& uatupos,
+               Storage3D& vatupos, Storage3D& uatvpos, Storage3D& vatvpos, Storage3D& uavg, Storage3D& vavg,
+               Storage3D& ures, Storage3D& vres, const ElementType eddlat, const ElementType eddlon) {
+  for (int64_t k = 0; k < domain_height; ++k) {
+    for (int64_t i = 0; i < domain_size; ++i) {
+      for (int64_t j = 0; j < domain_size; ++j) {
+        auto _uatupos = (ElementType(1.0) / ElementType(3.0)) * (uin(i - 1, j, k) + uin(i, j, k) + uin(i + 1, j, k));
+        auto _vatupos = ElementType(0.25) * (vin(i + 1, j, k) + vin(i + 1, j - 1, k) + vin(i, j, k) + vin(i, j - 1, k));
         auto _uavg = acrlat0(j) * _uatupos;
         auto _vavg = EARTH_RADIUS_RECIP * _vatupos;
         auto _ures = advectionDriver(uin, i, j, k, _uavg, _vavg, eddlat, eddlon);
@@ -141,6 +166,33 @@ void hadvuv5th_fullfusion(Storage3D& uout, Storage3D& vout, const Storage3D& uin
         auto _vatvpos = ElementType(1.0) / ElementType(3.0) * (vin(i, j - 1, k) + vin(i, j, k) + vin(i, j + 1, k));
         auto _uavg = acrlat1(j) * _uatvpos;
         auto _vavg = EARTH_RADIUS_RECIP * _vatvpos;
+        auto _vres = advectionDriver(vin, i, j, k, _uavg, _vavg, eddlat, eddlon);
+        vout(i, j, k) = _vres - tgrlatda1(j) * _uatvpos * _uatvpos;
+      }
+    }
+  }
+}
+
+
+void hadvuv5th_openmp(Storage3D& uout, Storage3D& vout, const Storage3D& uin, const Storage3D& vin, const Storage1D& acrlat0,
+               const Storage1D& acrlat1, const Storage1D& tgrlatda0, const Storage1D& tgrlatda1, Storage3D& uatupos,
+               Storage3D& vatupos, Storage3D& uatvpos, Storage3D& vatvpos, Storage3D& uavg, Storage3D& vavg,
+               Storage3D& ures, Storage3D& vres, const ElementType eddlat, const ElementType eddlon) {
+  #pragma omp parallel for
+  for (int64_t k = 0; k < domain_height; ++k) {
+    for (int64_t i = 0; i < domain_size; ++i) {
+      for (int64_t j = 0; j < domain_size; ++j) {
+        auto _uatupos = (ElementType(1.0) / ElementType(3.0)) * (uin(i - 1, j, k) + uin(i, j, k) + uin(i + 1, j, k));
+        auto _vatupos = ElementType(0.25) * (vin(i + 1, j, k) + vin(i + 1, j - 1, k) + vin(i, j, k) + vin(i, j - 1, k));
+        auto _uavg = acrlat0(j) * _uatupos;
+        auto _vavg = EARTH_RADIUS_RECIP * _vatupos;
+        auto _ures = advectionDriver(uin, i, j, k, _uavg, _vavg, eddlat, eddlon);
+        uout(i, j, k) = _ures + tgrlatda0(j) * uin(i, j, k) * _vatupos;
+
+        auto _uatvpos = ElementType(0.25) * (uin(i - 1, j, k) + uin(i, j, k) + uin(i, j + 1, k) + uin(i - 1, j + 1, k));
+        auto _vatvpos = ElementType(1.0) / ElementType(3.0) * (vin(i, j - 1, k) + vin(i, j, k) + vin(i, j + 1, k));
+        _uavg = acrlat1(j) * _uatvpos;
+        _vavg = EARTH_RADIUS_RECIP * _vatvpos;
         auto _vres = advectionDriver(vin, i, j, k, _uavg, _vavg, eddlat, eddlon);
         vout(i, j, k) = _vres - tgrlatda1(j) * _uatvpos * _uatvpos;
       }
