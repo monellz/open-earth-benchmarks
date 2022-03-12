@@ -86,6 +86,15 @@ int main(int argc, char **argv) {
       }
       break;
     }
+    case PARTIAL_FUSION: {
+      while (count--) {
+        timer.start("hdiffsmag partialfusion");
+        hdiffsmag_partialfusion(uout, vout, uin, vin, mask, crlavo, crlavu, crlato, crlatu, acrlat0, T_sqr_s, S_sqr_uv, eddlat, eddlon,
+                  tau_smag, weight_smag);
+        timer.stop("hdiffsmag partialfusion");
+      }
+      break;
+    }
     default: {
       std::cout << "Unknown ALGO" << std::endl;
     }
