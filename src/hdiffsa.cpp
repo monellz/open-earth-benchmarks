@@ -66,6 +66,22 @@ int main(int argc, char **argv) {
       }
       break;
     }
+    case PARTIAL_FUSION: {
+      while (count--) {
+        timer.start("hdiffsa partialfusion");
+        hdiffsa_partialfusion(in, mask, out, crlato, crlatu, lap, flx, fly);
+        timer.stop("hdiffsa partialfusion");
+      }
+      break;
+    }
+    case OPENMP: {
+      while (count--) {
+        timer.start("hdiffsa openmp");
+        hdiffsa_openmp(in, mask, out, crlato, crlatu, lap, flx, fly);
+        timer.stop("hdiffsa openmp");
+      }
+      break;
+    }
     default: {
       std::cout << "Unknown ALGO" << std::endl;
     }

@@ -82,6 +82,14 @@ int main(int argc, char **argv) {
       }
       break;
     }
+    case OPENMP: {
+      while (count--) {
+        timer.start("fastwavesuv openmp");
+        fastwavesuv_openmp(uout, vout, uin, vin, utens, vtens, wgtfac, ppuv, hhl, rho, fx, ppgk, ppgc, ppgu, ppgv, edadlat, dt);
+        timer.stop("fastwavesuv openmp");
+      }
+      break;
+    }
     default: {
       std::cout << "Unknown ALGO" << std::endl;
     }
