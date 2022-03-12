@@ -74,6 +74,14 @@ int main(int argc, char **argv) {
       }
       break;
     }
+    case PARTIAL_FUSION: {
+      while (count--) {
+        timer.start("p_grad_c partialfusion");
+        p_grad_c_partialfusion(uout, vout, uin, vin, rdxc, rdyc, delpc, gz, pkc, wk, dt2);
+        timer.stop("p_grad_c partialfusion");
+      }
+      break;
+    }
     default: {
       std::cout << "Unknown ALGO" << std::endl;
     }
