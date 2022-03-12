@@ -55,6 +55,14 @@ int main(int argc, char **argv) {
       }
       break;
     }
+    case PARTIAL_FUSION: {
+      while (count--) {
+        timer.start("laplace partialfusion");
+        laplace_partialfusion(in, out);
+        timer.stop("laplace partialfusion");
+      }
+      break;
+    }
     default: {
       std::cout << "Unknown ALGO" << std::endl;
     }
