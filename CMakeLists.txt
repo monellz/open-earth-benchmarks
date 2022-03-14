@@ -19,7 +19,7 @@ endfunction()
 
 #set(CMAKE_CUDA_FLAGS " -G -g -line-info ")
 # add_example(laplace)
-# add_example(hdiffsa)
+add_example(hdiffsa)
 # add_example(hdiffsmag)
 add_example(hadvuv)
 add_example(hadvuv5th)
