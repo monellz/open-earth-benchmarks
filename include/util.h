@@ -25,6 +25,8 @@ template <typename ElementType, size_t Rank>
 struct Storage {
   ElementType *allocatedPtr;
   ElementType *alignedPtr;
+  double *cudaPtr;
+  int64_t allocSize;
   int64_t offset;
   std::array<int64_t, Rank> sizes;    // omitted when rank == 0
   std::array<int64_t, Rank> strides;  // omitted when rank == 0
@@ -47,6 +49,8 @@ struct Storage {
 
   template <typename... T>
   const ElementType &operator()(type<T...>, T... arg) const;
+
+  void tocuda() { cudaMemcpy(cudaPtr, (double *)alignedPtr, allocSize * sizeof(double), cudaMemcpyDefault); }
 };
 
 typedef Storage<ElementType, 1> Storage1D;
@@ -117,8 +121,8 @@ Storage2D allocateStorage(const std::array<int64_t, 2> sizes) {
   result.strides[1] = 1;
   result.strides[0] = result.sizes[1];
   result.offset = halo_width * result.strides[0] + halo_width * result.strides[1];
-  const int64_t allocSize = sizes[0] * sizes[1];
-  result.allocatedPtr = new ElementType[allocSize + (32 - halo_width)];
+  result.allocSize = sizes[0] * sizes[1];
+  result.allocatedPtr = new ElementType[result.allocSize + (32 - halo_width)];
   result.alignedPtr = &result.allocatedPtr[(32 - halo_width)];
   return result;
 }
@@ -134,9 +138,10 @@ Storage3D allocateStorage(const std::array<int64_t, 3> sizes) {
   result.strides[1] = result.sizes[2];
   result.strides[0] = result.sizes[2] * result.sizes[1];
   result.offset = halo_width * result.strides[0] + halo_width * result.strides[1] + halo_width * result.strides[2];
-  const int64_t allocSize = sizes[0] * sizes[1] * sizes[2];
-  result.allocatedPtr = new ElementType[allocSize + (32 - halo_width)];
+  result.allocSize = sizes[0] * sizes[1] * sizes[2];
+  result.allocatedPtr = new ElementType[result.allocSize + (32 - halo_width)];
   result.alignedPtr = &result.allocatedPtr[(32 - halo_width)];
+  cudaMallocManaged(&result.cudaPtr, result.allocSize * sizeof(double));
   return result;
 }
 
@@ -161,6 +166,7 @@ void fillMath(ElementType a, ElementType b, ElementType c, ElementType d, Elemen
       }
     }
   }
+  field.tocuda();
 }
 
 void fillMath(ElementType a, ElementType b, ElementType c, ElementType d, ElementType e, ElementType f,
@@ -193,6 +199,7 @@ void initValue(Storage3D &ref, const ElementType val, const int64_t domain_size,
       for (int64_t k = -halo_width; k < domain_height + halo_width; ++k) {
         ref(i, j, k) = val;
       }
+  ref.tocuda();
 }
 
 struct mytimer_t {
@@ -201,11 +208,13 @@ struct mytimer_t {
   std::unordered_map<const char *, timeval> time_point;
 
   void start(const char *func) {
+    cudaDeviceSynchronize();
     timeval s;
     gettimeofday(&s, NULL);
     time_point[func] = s;
   }
   void stop(const char *func) {
+    cudaDeviceSynchronize();
     timeval e;
     gettimeofday(&e, NULL);
     count[func]++;
