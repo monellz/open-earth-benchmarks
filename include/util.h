@@ -11,6 +11,7 @@
 #define DEFAULT 0
 #define FULL_FUSION 1
 #define PARTIAL_FUSION 2
+#define THREAD_MAP 2
 #define OPENMP 3
 
 #define get_elapsed_time_ms(_s, _e) (1000.0 * (_e.tv_sec - _s.tv_sec) + (_e.tv_usec - _s.tv_usec) / 1000.0)
@@ -119,8 +120,8 @@ Storage1D allocateStorage(const int64_t size) {
   result.allocatedPtr = new ElementType[size + (32 - halo_width)];
   result.alignedPtr = &result.allocatedPtr[(32 - halo_width)];
   result.allocSize = size;
-  cudaMalloc(&result.cudaPtr, (result.allocSize + (32 - halo_width) * 2) * sizeof(double));
-  result.cudaPtr += (32 - halo_width);
+  cudaMalloc(&result.cudaPtr, (result.allocSize + (32 - halo_width) * 2) * sizeof(double) * 4);
+  result.cudaPtr += (32 - halo_width) + result.allocSize * 2;
   // result.display();
   return result;
 }
@@ -138,8 +139,8 @@ Storage2D allocateStorage(const std::array<int64_t, 2> sizes) {
   result.allocatedPtr = new ElementType[result.allocSize + (32 - halo_width)];
   result.alignedPtr = &result.allocatedPtr[(32 - halo_width)];
   result.allocSize = sizes[0] * sizes[1];
-  cudaMalloc(&result.cudaPtr, (result.allocSize + (32 - halo_width) * 2) * sizeof(double));
-  result.cudaPtr += (32 - halo_width);
+  cudaMalloc(&result.cudaPtr, (result.allocSize + (32 - halo_width) * 2) * sizeof(double) * 4);
+  result.cudaPtr += (32 - halo_width) + result.allocSize * 2;
   // result.display();
   return result;
 }
@@ -158,8 +159,8 @@ Storage3D allocateStorage(const std::array<int64_t, 3> sizes) {
   result.allocSize = sizes[0] * sizes[1] * sizes[2];
   result.allocatedPtr = new ElementType[result.allocSize + (32 - halo_width)];
   result.alignedPtr = &result.allocatedPtr[(32 - halo_width)];
-  cudaMalloc(&result.cudaPtr, (result.allocSize + (32 - halo_width) * 2) * sizeof(double));
-  result.cudaPtr += (32 - halo_width);
+  cudaMalloc(&result.cudaPtr, (result.allocSize + (32 - halo_width) * 2) * sizeof(double) * 4);
+  result.cudaPtr += (32 - halo_width) + result.allocSize * 2;
   // cudaMemset(&result.cudaPtr, result.allocSize * sizeof(double));
   // result.display();
   return result;

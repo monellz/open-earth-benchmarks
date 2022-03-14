@@ -179,7 +179,21 @@ void fastwavesuv_fullfusion(
                  double *ppgv,int64_t ppgv_offset_3_3, int64_t ppgv_offset_3_2, int64_t ppgv_offset_3_1, double edadlat, double dt) {
 
     auto size = (domain_size) * (domain_size) * (domain_height);
-    int blocksize = 128;
+    int blocksize = 64;
+    fastwavesuv_fullfusion_k1<<< (size + blocksize - 1) / blocksize, blocksize >>>
+        (uout, uout_offset_3_3,  uout_offset_3_2,  uout_offset_3_1, vout, vout_offset_3_3,  vout_offset_3_2,  vout_offset_3_1, uin, uin_offset_3_3,  uin_offset_3_2,  uin_offset_3_1, vin, vin_offset_3_3,  vin_offset_3_2,  vin_offset_3_1, utens, utens_offset_3_3,  utens_offset_3_2,  utens_offset_3_1, vtens, vtens_offset_3_3,  vtens_offset_3_2,  vtens_offset_3_1, wgtfac, wgtfac_offset_3_3,  wgtfac_offset_3_2,  wgtfac_offset_3_1, ppuv, ppuv_offset_3_3,  ppuv_offset_3_2,  ppuv_offset_3_1, hhl, hhl_offset_3_3,  hhl_offset_3_2,  hhl_offset_3_1, rho, rho_offset_3_3,  rho_offset_3_2,  rho_offset_3_1,  fx, ppgk, ppgk_offset_3_3,  ppgk_offset_3_2,  ppgk_offset_3_1, ppgc, ppgc_offset_3_3,  ppgc_offset_3_2,  ppgc_offset_3_1, ppgu, ppgu_offset_3_3,  ppgu_offset_3_2,  ppgu_offset_3_1, ppgv, ppgv_offset_3_3,  ppgv_offset_3_2,  ppgv_offset_3_1, edadlat, dt,  domain_size,  domain_height);
+}
+
+
+
+void fastwavesuv_fullfusion2(
+        double *uout,int64_t uout_offset_3_3, int64_t uout_offset_3_2, int64_t uout_offset_3_1, double *vout,int64_t vout_offset_3_3, int64_t vout_offset_3_2, int64_t vout_offset_3_1, double *uin,int64_t uin_offset_3_3, int64_t uin_offset_3_2, int64_t uin_offset_3_1, double *vin,int64_t vin_offset_3_3, int64_t vin_offset_3_2, int64_t vin_offset_3_1, double *utens,int64_t utens_offset_3_3, int64_t utens_offset_3_2, int64_t utens_offset_3_1,
+                 double *vtens,int64_t vtens_offset_3_3, int64_t vtens_offset_3_2, int64_t vtens_offset_3_1, double *wgtfac,int64_t wgtfac_offset_3_3, int64_t wgtfac_offset_3_2, int64_t wgtfac_offset_3_1, double *ppuv,int64_t ppuv_offset_3_3, int64_t ppuv_offset_3_2, int64_t ppuv_offset_3_1, double *hhl,int64_t hhl_offset_3_3, int64_t hhl_offset_3_2, int64_t hhl_offset_3_1,
+                 double *rho,int64_t rho_offset_3_3, int64_t rho_offset_3_2, int64_t rho_offset_3_1, double* fx, double *ppgk,int64_t ppgk_offset_3_3, int64_t ppgk_offset_3_2, int64_t ppgk_offset_3_1, double *ppgc,int64_t ppgc_offset_3_3, int64_t ppgc_offset_3_2, int64_t ppgc_offset_3_1, double *ppgu,int64_t ppgu_offset_3_3, int64_t ppgu_offset_3_2, int64_t ppgu_offset_3_1,
+                 double *ppgv,int64_t ppgv_offset_3_3, int64_t ppgv_offset_3_2, int64_t ppgv_offset_3_1, double edadlat, double dt) {
+
+    auto size = (domain_size) * (domain_size) * (domain_height);
+    int blocksize = 512;
     fastwavesuv_fullfusion_k1<<< (size + blocksize - 1) / blocksize, blocksize >>>
         (uout, uout_offset_3_3,  uout_offset_3_2,  uout_offset_3_1, vout, vout_offset_3_3,  vout_offset_3_2,  vout_offset_3_1, uin, uin_offset_3_3,  uin_offset_3_2,  uin_offset_3_1, vin, vin_offset_3_3,  vin_offset_3_2,  vin_offset_3_1, utens, utens_offset_3_3,  utens_offset_3_2,  utens_offset_3_1, vtens, vtens_offset_3_3,  vtens_offset_3_2,  vtens_offset_3_1, wgtfac, wgtfac_offset_3_3,  wgtfac_offset_3_2,  wgtfac_offset_3_1, ppuv, ppuv_offset_3_3,  ppuv_offset_3_2,  ppuv_offset_3_1, hhl, hhl_offset_3_3,  hhl_offset_3_2,  hhl_offset_3_1, rho, rho_offset_3_3,  rho_offset_3_2,  rho_offset_3_1,  fx, ppgk, ppgk_offset_3_3,  ppgk_offset_3_2,  ppgk_offset_3_1, ppgc, ppgc_offset_3_3,  ppgc_offset_3_2,  ppgc_offset_3_1, ppgu, ppgu_offset_3_3,  ppgu_offset_3_2,  ppgu_offset_3_1, ppgv, ppgv_offset_3_3,  ppgv_offset_3_2,  ppgv_offset_3_1, edadlat, dt,  domain_size,  domain_height);
 }

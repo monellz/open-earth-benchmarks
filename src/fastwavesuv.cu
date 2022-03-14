@@ -4,7 +4,7 @@
 int64_t domain_size = 64;
 int64_t domain_height = 60;
 int64_t halo_width = 4;
-int64_t count = 1000;
+int64_t count = 100;
 
 typedef double ElementType;
 
@@ -64,66 +64,70 @@ int main(int argc, char **argv) {
 
   // initValue(uout, 0.0, domain_size, domain_height);
   // initValue(vout, 0.0, domain_size, domain_height);
+  auto tmp = count;
   cudaDeviceSynchronize();
-  switch (ALGO) {
-    case DEFAULT: {
-      while (count--) {
-        timer.start("fastwavesuv");
-        fastwavesuv(
-            // uout, vout, uin, vin, utens, vtens, wgtfac, ppuv, hhl, rho, fx, ppgk, ppgc, ppgu, ppgv,
-            uout.cudaPtr, uout.strides[0], uout.strides[1], uout.strides[2], vout.cudaPtr, vout.strides[0],
-            vout.strides[1], vout.strides[2], uin.cudaPtr, uin.strides[0], uin.strides[1], uin.strides[2], vin.cudaPtr,
-            vin.strides[0], vin.strides[1], vin.strides[2], utens.cudaPtr, utens.strides[0], utens.strides[1],
-            utens.strides[2], vtens.cudaPtr, vtens.strides[0], vtens.strides[1], vtens.strides[2], wgtfac.cudaPtr,
-            wgtfac.strides[0], wgtfac.strides[1], wgtfac.strides[2], ppuv.cudaPtr, ppuv.strides[0], ppuv.strides[1],
-            ppuv.strides[2], hhl.cudaPtr, hhl.strides[0], hhl.strides[1], hhl.strides[2], rho.cudaPtr, rho.strides[0],
-            rho.strides[1], rho.strides[2], fx.cudaPtr, ppgk.cudaPtr, ppgk.strides[0], ppgk.strides[1], ppgk.strides[2],
-            ppgc.cudaPtr, ppgc.strides[0], ppgc.strides[1], ppgc.strides[2], ppgu.cudaPtr, ppgu.strides[0],
-            ppgu.strides[1], ppgu.strides[2], ppgv.cudaPtr, ppgv.strides[0], ppgv.strides[1], ppgv.strides[2],
-            (double)edadlat, (double)dt);
-        timer.stop("fastwavesuv");
-      }
-      break;
-    }
-    case FULL_FUSION: {
-      while (count--) {
-        timer.start("fastwavesuv fullfusion");
-        fastwavesuv_fullfusion(
-            uout.cudaPtr, uout.strides[0], uout.strides[1], uout.strides[2], vout.cudaPtr, vout.strides[0],
-            vout.strides[1], vout.strides[2], uin.cudaPtr, uin.strides[0], uin.strides[1], uin.strides[2], vin.cudaPtr,
-            vin.strides[0], vin.strides[1], vin.strides[2], utens.cudaPtr, utens.strides[0], utens.strides[1],
-            utens.strides[2], vtens.cudaPtr, vtens.strides[0], vtens.strides[1], vtens.strides[2], wgtfac.cudaPtr,
-            wgtfac.strides[0], wgtfac.strides[1], wgtfac.strides[2], ppuv.cudaPtr, ppuv.strides[0], ppuv.strides[1],
-            ppuv.strides[2], hhl.cudaPtr, hhl.strides[0], hhl.strides[1], hhl.strides[2], rho.cudaPtr, rho.strides[0],
-            rho.strides[1], rho.strides[2], fx.cudaPtr, ppgk.cudaPtr, ppgk.strides[0], ppgk.strides[1], ppgk.strides[2],
-            ppgc.cudaPtr, ppgc.strides[0], ppgc.strides[1], ppgc.strides[2], ppgu.cudaPtr, ppgu.strides[0],
-            ppgu.strides[1], ppgu.strides[2], ppgv.cudaPtr, ppgv.strides[0], ppgv.strides[1], ppgv.strides[2],
-            (double)edadlat, (double)dt);
-        timer.stop("fastwavesuv fullfusion");
-      }
-      break;
-    }
-    // // case PARTIAL_FUSION: {
-    // //   while (count--) {
-    // //     timer.start("fastwavesuv partialfusion");
-    // //     fastwavesuv_partialfusion(uout, vout, uin, vin, utens, vtens, wgtfac, ppuv, hhl, rho, fx, ppgk, ppgc,
-    // ppgu, ppgv, edadlat, dt);
-    // //     timer.stop("fastwavesuv partialfusion");
-    // //   }
-    // //   break;
-    // // }
-    // case OPENMP: {
-    //   while (count--) {
-    //     timer.start("fastwavesuv openmp");
-    //     fastwavesuv_openmp(uout, vout, uin, vin, utens, vtens, wgtfac, ppuv, hhl, rho, fx, ppgk, ppgc, ppgu, ppgv,
-    //     edadlat, dt); timer.stop("fastwavesuv openmp");
-    //   }
-    //   break;
-    // }
-    default: {
-      std::cout << "Unknown ALGO" << std::endl;
-    }
+  while (count--) {
+    timer.start("fastwavesuv");
+    fastwavesuv(
+        // uout, vout, uin, vin, utens, vtens, wgtfac, ppuv, hhl, rho, fx, ppgk, ppgc, ppgu, ppgv,
+        uout.cudaPtr, uout.strides[0], uout.strides[1], uout.strides[2], vout.cudaPtr, vout.strides[0], vout.strides[1],
+        vout.strides[2], uin.cudaPtr, uin.strides[0], uin.strides[1], uin.strides[2], vin.cudaPtr, vin.strides[0],
+        vin.strides[1], vin.strides[2], utens.cudaPtr, utens.strides[0], utens.strides[1], utens.strides[2],
+        vtens.cudaPtr, vtens.strides[0], vtens.strides[1], vtens.strides[2], wgtfac.cudaPtr, wgtfac.strides[0],
+        wgtfac.strides[1], wgtfac.strides[2], ppuv.cudaPtr, ppuv.strides[0], ppuv.strides[1], ppuv.strides[2],
+        hhl.cudaPtr, hhl.strides[0], hhl.strides[1], hhl.strides[2], rho.cudaPtr, rho.strides[0], rho.strides[1],
+        rho.strides[2], fx.cudaPtr, ppgk.cudaPtr, ppgk.strides[0], ppgk.strides[1], ppgk.strides[2], ppgc.cudaPtr,
+        ppgc.strides[0], ppgc.strides[1], ppgc.strides[2], ppgu.cudaPtr, ppgu.strides[0], ppgu.strides[1],
+        ppgu.strides[2], ppgv.cudaPtr, ppgv.strides[0], ppgv.strides[1], ppgv.strides[2], (double)edadlat, (double)dt);
+    timer.stop("fastwavesuv");
   }
+  count = tmp;
+  while (count--) {
+    timer.start("fastwavesuv fullfusion");
+    fastwavesuv_fullfusion(
+        uout.cudaPtr, uout.strides[0], uout.strides[1], uout.strides[2], vout.cudaPtr, vout.strides[0], vout.strides[1],
+        vout.strides[2], uin.cudaPtr, uin.strides[0], uin.strides[1], uin.strides[2], vin.cudaPtr, vin.strides[0],
+        vin.strides[1], vin.strides[2], utens.cudaPtr, utens.strides[0], utens.strides[1], utens.strides[2],
+        vtens.cudaPtr, vtens.strides[0], vtens.strides[1], vtens.strides[2], wgtfac.cudaPtr, wgtfac.strides[0],
+        wgtfac.strides[1], wgtfac.strides[2], ppuv.cudaPtr, ppuv.strides[0], ppuv.strides[1], ppuv.strides[2],
+        hhl.cudaPtr, hhl.strides[0], hhl.strides[1], hhl.strides[2], rho.cudaPtr, rho.strides[0], rho.strides[1],
+        rho.strides[2], fx.cudaPtr, ppgk.cudaPtr, ppgk.strides[0], ppgk.strides[1], ppgk.strides[2], ppgc.cudaPtr,
+        ppgc.strides[0], ppgc.strides[1], ppgc.strides[2], ppgu.cudaPtr, ppgu.strides[0], ppgu.strides[1],
+        ppgu.strides[2], ppgv.cudaPtr, ppgv.strides[0], ppgv.strides[1], ppgv.strides[2], (double)edadlat, (double)dt);
+    timer.stop("fastwavesuv fullfusion");
+  }
+  count = tmp;
+  while (count--) {
+    timer.start("fastwavesuv fullfusion2");
+    fastwavesuv_fullfusion2(
+        uout.cudaPtr, uout.strides[0], uout.strides[1], uout.strides[2], vout.cudaPtr, vout.strides[0], vout.strides[1],
+        vout.strides[2], uin.cudaPtr, uin.strides[0], uin.strides[1], uin.strides[2], vin.cudaPtr, vin.strides[0],
+        vin.strides[1], vin.strides[2], utens.cudaPtr, utens.strides[0], utens.strides[1], utens.strides[2],
+        vtens.cudaPtr, vtens.strides[0], vtens.strides[1], vtens.strides[2], wgtfac.cudaPtr, wgtfac.strides[0],
+        wgtfac.strides[1], wgtfac.strides[2], ppuv.cudaPtr, ppuv.strides[0], ppuv.strides[1], ppuv.strides[2],
+        hhl.cudaPtr, hhl.strides[0], hhl.strides[1], hhl.strides[2], rho.cudaPtr, rho.strides[0], rho.strides[1],
+        rho.strides[2], fx.cudaPtr, ppgk.cudaPtr, ppgk.strides[0], ppgk.strides[1], ppgk.strides[2], ppgc.cudaPtr,
+        ppgc.strides[0], ppgc.strides[1], ppgc.strides[2], ppgu.cudaPtr, ppgu.strides[0], ppgu.strides[1],
+        ppgu.strides[2], ppgv.cudaPtr, ppgv.strides[0], ppgv.strides[1], ppgv.strides[2], (double)edadlat, (double)dt);
+    timer.stop("fastwavesuv fullfusion2");
+  }
+  // // case PARTIAL_FUSION: {
+  // //   while (count--) {
+  // //     timer.start("fastwavesuv partialfusion");
+  // //     fastwavesuv_partialfusion(uout, vout, uin, vin, utens, vtens, wgtfac, ppuv, hhl, rho, fx, ppgk, ppgc,
+  // ppgu, ppgv, edadlat, dt);
+  // //     timer.stop("fastwavesuv partialfusion");
+  // //   }
+  // //   break;
+  // // }
+  // case OPENMP: {
+  //   while (count--) {
+  //     timer.start("fastwavesuv openmp");
+  //     fastwavesuv_openmp(uout, vout, uin, vin, utens, vtens, wgtfac, ppuv, hhl, rho, fx, ppgk, ppgc, ppgu, ppgv,
+  //     edadlat, dt); timer.stop("fastwavesuv openmp");
+  //   }
+  //   break;
+  // }
   timer.show_all();
 
   // free the storage
