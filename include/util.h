@@ -19,6 +19,9 @@
 #define EARTH_RADIUS ((ElementType)6371.229e3)  // radius of the earth
 #define EARTH_RADIUS_RECIP ((ElementType)1.0 / EARTH_RADIUS)
 
+#define DOUBLE_EARTH_RADIUS ((double)6371.229e3)  // radius of the earth
+#define DOUBLE_EARTH_RADIUS_RECIP ((double)1.0 / EARTH_RADIUS)
+
 const ElementType pi(std::acos(-1.0));
 
 namespace {
