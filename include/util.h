@@ -1,6 +1,7 @@
 #ifndef UTIL_H
 #define UTIL_H
 
+#include <assert.h>
 #include <sys/time.h>
 
 #include <array>
@@ -25,7 +26,7 @@ template <typename ElementType, size_t Rank>
 struct Storage {
   ElementType *allocatedPtr;
   ElementType *alignedPtr;
-  double *cudaPtr;
+  double *cudaPtr = nullptr;
   int64_t allocSize;
   int64_t offset;
   std::array<int64_t, Rank> sizes;    // omitted when rank == 0
@@ -37,6 +38,14 @@ struct Storage {
   template <typename... T>
   ElementType &operator()(T... arg) {
     return operator()(type<T...>(), arg...);
+  }
+
+  void check() { assert(cudaPtr != nullptr); }
+  void display() {
+    printf("===\n");
+    printf("size %lld\n", allocSize);
+    for (auto &item : strides) printf("%lld\n", item);
+    printf("===\n");
   }
 
   template <typename... T>
@@ -109,6 +118,10 @@ Storage1D allocateStorage(const int64_t size) {
   result.offset = halo_width * result.strides[0];
   result.allocatedPtr = new ElementType[size + (32 - halo_width)];
   result.alignedPtr = &result.allocatedPtr[(32 - halo_width)];
+  result.allocSize = size;
+  cudaMalloc(&result.cudaPtr, (result.allocSize + (32 - halo_width) * 2) * sizeof(double));
+  result.cudaPtr += (32 - halo_width);
+  // result.display();
   return result;
 }
 
@@ -124,6 +137,10 @@ Storage2D allocateStorage(const std::array<int64_t, 2> sizes) {
   result.allocSize = sizes[0] * sizes[1];
   result.allocatedPtr = new ElementType[result.allocSize + (32 - halo_width)];
   result.alignedPtr = &result.allocatedPtr[(32 - halo_width)];
+  result.allocSize = sizes[0] * sizes[1];
+  cudaMalloc(&result.cudaPtr, (result.allocSize + (32 - halo_width) * 2) * sizeof(double));
+  result.cudaPtr += (32 - halo_width);
+  // result.display();
   return result;
 }
 
@@ -141,7 +158,10 @@ Storage3D allocateStorage(const std::array<int64_t, 3> sizes) {
   result.allocSize = sizes[0] * sizes[1] * sizes[2];
   result.allocatedPtr = new ElementType[result.allocSize + (32 - halo_width)];
   result.alignedPtr = &result.allocatedPtr[(32 - halo_width)];
-  cudaMallocManaged(&result.cudaPtr, result.allocSize * sizeof(double));
+  cudaMalloc(&result.cudaPtr, (result.allocSize + (32 - halo_width) * 2) * sizeof(double));
+  result.cudaPtr += (32 - halo_width);
+  // cudaMemset(&result.cudaPtr, result.allocSize * sizeof(double));
+  // result.display();
   return result;
 }
 
@@ -181,6 +201,7 @@ void fillMath(ElementType a, ElementType b, ElementType c, ElementType d, Elemen
       field(i, j) = a * (b + cos(pi * (x + c * y)) + sin(d * pi * (x + e * y))) / f;
     }
   }
+  field.tocuda();
 }
 
 void fillMath(ElementType a, ElementType b, ElementType c, ElementType d, ElementType e, ElementType f,
@@ -191,6 +212,7 @@ void fillMath(ElementType a, ElementType b, ElementType c, ElementType d, Elemen
     ElementType x = dx * (ElementType)i;
     field(i) = a * (b + cos(pi * (c * x)) + sin(d * pi * (e * x))) / f;
   }
+  field.tocuda();
 }
 
 void initValue(Storage3D &ref, const ElementType val, const int64_t domain_size, const int64_t domain_heigh) {

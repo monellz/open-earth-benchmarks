@@ -52,34 +52,34 @@ int main(int argc, char **argv) {
   ElementType dt = 10.0;
   ElementType edadlat = ldexpl(1.0, -11);
 
-  fillMath(1.0, 3.3, 1.5, 1.5, 2.0, 4.0, uin, domain_size, domain_height);
-  fillMath(1.1, 2.0, 1.5, 2.8, 2.0, 4.1, utens, domain_size, domain_height);
-  fillMath(1.1, 2.0, 1.5, 2.8, 2.0, 4.1, vin, domain_size, domain_height);
-  fillMath(8.0, 9.4, 1.5, 1.7, 2.0, 3.5, vtens, domain_size, domain_height);
-  fillMath(8.0, 9.4, 1.5, 1.7, 2.0, 3.5, ppuv, domain_size, domain_height);
-  fillMath(5.0, 8.0, 1.5, 7.1, 2.0, 4.3, wgtfac, domain_size, domain_height);
-  fillMath(5.0, 8.0, 1.5, 7.1, 2.0, 4.3, hhl, domain_size, domain_height);
-  fillMath(3.2, 7.0, 2.5, 6.1, 3.0, 2.3, rho, domain_size, domain_height);
-  fillMath(4.5, 5.0, 2.5, 2.1, 3.0, 2.3, fx, domain_size, domain_height);
+  // fillMath(1.0, 3.3, 1.5, 1.5, 2.0, 4.0, uin, domain_size, domain_height);
+  // fillMath(1.1, 2.0, 1.5, 2.8, 2.0, 4.1, utens, domain_size, domain_height);
+  // fillMath(1.1, 2.0, 1.5, 2.8, 2.0, 4.1, vin, domain_size, domain_height);
+  // fillMath(8.0, 9.4, 1.5, 1.7, 2.0, 3.5, vtens, domain_size, domain_height);
+  // fillMath(8.0, 9.4, 1.5, 1.7, 2.0, 3.5, ppuv, domain_size, domain_height);
+  // fillMath(5.0, 8.0, 1.5, 7.1, 2.0, 4.3, wgtfac, domain_size, domain_height);
+  // fillMath(5.0, 8.0, 1.5, 7.1, 2.0, 4.3, hhl, domain_size, domain_height);
+  // fillMath(3.2, 7.0, 2.5, 6.1, 3.0, 2.3, rho, domain_size, domain_height);
+  // fillMath(4.5, 5.0, 2.5, 2.1, 3.0, 2.3, fx, domain_size, domain_height);
 
-  initValue(uout, 0.0, domain_size, domain_height);
-  initValue(vout, 0.0, domain_size, domain_height);
-
+  // initValue(uout, 0.0, domain_size, domain_height);
+  // initValue(vout, 0.0, domain_size, domain_height);
+  cudaDeviceSynchronize();
   switch (ALGO) {
     case DEFAULT: {
       while (count--) {
         timer.start("fastwavesuv");
         fastwavesuv(
             // uout, vout, uin, vin, utens, vtens, wgtfac, ppuv, hhl, rho, fx, ppgk, ppgc, ppgu, ppgv,
-            uout.cudaPtr, uout.strides[2], uout.strides[1], uout.strides[0], vout.cudaPtr, vout.strides[2],
-            vout.strides[1], vout.strides[0], uin.cudaPtr, uin.strides[2], uin.strides[1], uin.strides[0], vin.cudaPtr,
-            vin.strides[2], vin.strides[1], vin.strides[0], utens.cudaPtr, utens.strides[2], utens.strides[1],
-            utens.strides[0], vtens.cudaPtr, vtens.strides[2], vtens.strides[1], vtens.strides[0], wgtfac.cudaPtr,
-            wgtfac.strides[2], wgtfac.strides[1], wgtfac.strides[0], ppuv.cudaPtr, ppuv.strides[2], ppuv.strides[1],
-            ppuv.strides[0], hhl.cudaPtr, hhl.strides[2], hhl.strides[1], hhl.strides[0], rho.cudaPtr, rho.strides[2],
-            rho.strides[1], rho.strides[0], fx.cudaPtr, ppgk.cudaPtr, ppgk.strides[2], ppgk.strides[1], ppgk.strides[0],
-            ppgc.cudaPtr, ppgc.strides[2], ppgc.strides[1], ppgc.strides[0], ppgu.cudaPtr, ppgu.strides[2],
-            ppgu.strides[1], ppgu.strides[0], ppgv.cudaPtr, ppgv.strides[2], ppgv.strides[1], ppgv.strides[0],
+            uout.cudaPtr, uout.strides[0], uout.strides[1], uout.strides[2], vout.cudaPtr, vout.strides[0],
+            vout.strides[1], vout.strides[2], uin.cudaPtr, uin.strides[0], uin.strides[1], uin.strides[2], vin.cudaPtr,
+            vin.strides[0], vin.strides[1], vin.strides[2], utens.cudaPtr, utens.strides[0], utens.strides[1],
+            utens.strides[2], vtens.cudaPtr, vtens.strides[0], vtens.strides[1], vtens.strides[2], wgtfac.cudaPtr,
+            wgtfac.strides[0], wgtfac.strides[1], wgtfac.strides[2], ppuv.cudaPtr, ppuv.strides[0], ppuv.strides[1],
+            ppuv.strides[2], hhl.cudaPtr, hhl.strides[0], hhl.strides[1], hhl.strides[2], rho.cudaPtr, rho.strides[0],
+            rho.strides[1], rho.strides[2], fx.cudaPtr, ppgk.cudaPtr, ppgk.strides[0], ppgk.strides[1], ppgk.strides[2],
+            ppgc.cudaPtr, ppgc.strides[0], ppgc.strides[1], ppgc.strides[2], ppgu.cudaPtr, ppgu.strides[0],
+            ppgu.strides[1], ppgu.strides[2], ppgv.cudaPtr, ppgv.strides[0], ppgv.strides[1], ppgv.strides[2],
             (double)edadlat, (double)dt);
         timer.stop("fastwavesuv");
       }
@@ -89,15 +89,15 @@ int main(int argc, char **argv) {
       while (count--) {
         timer.start("fastwavesuv fullfusion");
         fastwavesuv_fullfusion(
-            uout.cudaPtr, uout.strides[2], uout.strides[1], uout.strides[0], vout.cudaPtr, vout.strides[2],
-            vout.strides[1], vout.strides[0], uin.cudaPtr, uin.strides[2], uin.strides[1], uin.strides[0], vin.cudaPtr,
-            vin.strides[2], vin.strides[1], vin.strides[0], utens.cudaPtr, utens.strides[2], utens.strides[1],
-            utens.strides[0], vtens.cudaPtr, vtens.strides[2], vtens.strides[1], vtens.strides[0], wgtfac.cudaPtr,
-            wgtfac.strides[2], wgtfac.strides[1], wgtfac.strides[0], ppuv.cudaPtr, ppuv.strides[2], ppuv.strides[1],
-            ppuv.strides[0], hhl.cudaPtr, hhl.strides[2], hhl.strides[1], hhl.strides[0], rho.cudaPtr, rho.strides[2],
-            rho.strides[1], rho.strides[0], fx.cudaPtr, ppgk.cudaPtr, ppgk.strides[2], ppgk.strides[1], ppgk.strides[0],
-            ppgc.cudaPtr, ppgc.strides[2], ppgc.strides[1], ppgc.strides[0], ppgu.cudaPtr, ppgu.strides[2],
-            ppgu.strides[1], ppgu.strides[0], ppgv.cudaPtr, ppgv.strides[2], ppgv.strides[1], ppgv.strides[0],
+            uout.cudaPtr, uout.strides[0], uout.strides[1], uout.strides[2], vout.cudaPtr, vout.strides[0],
+            vout.strides[1], vout.strides[2], uin.cudaPtr, uin.strides[0], uin.strides[1], uin.strides[2], vin.cudaPtr,
+            vin.strides[0], vin.strides[1], vin.strides[2], utens.cudaPtr, utens.strides[0], utens.strides[1],
+            utens.strides[2], vtens.cudaPtr, vtens.strides[0], vtens.strides[1], vtens.strides[2], wgtfac.cudaPtr,
+            wgtfac.strides[0], wgtfac.strides[1], wgtfac.strides[2], ppuv.cudaPtr, ppuv.strides[0], ppuv.strides[1],
+            ppuv.strides[2], hhl.cudaPtr, hhl.strides[0], hhl.strides[1], hhl.strides[2], rho.cudaPtr, rho.strides[0],
+            rho.strides[1], rho.strides[2], fx.cudaPtr, ppgk.cudaPtr, ppgk.strides[0], ppgk.strides[1], ppgk.strides[2],
+            ppgc.cudaPtr, ppgc.strides[0], ppgc.strides[1], ppgc.strides[2], ppgu.cudaPtr, ppgu.strides[0],
+            ppgu.strides[1], ppgu.strides[2], ppgv.cudaPtr, ppgv.strides[0], ppgv.strides[1], ppgv.strides[2],
             (double)edadlat, (double)dt);
         timer.stop("fastwavesuv fullfusion");
       }

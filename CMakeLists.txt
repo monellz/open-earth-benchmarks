@@ -17,6 +17,7 @@ function(add_example example_name)
   # target_link_libraries(${example_name} PUBLIC OpenMP::OpenMP_CXX)
 endfunction()
 
+#set(CMAKE_CUDA_FLAGS " -G -g -line-info ")
 # add_example(laplace)
 # add_example(hdiffsa)
 # add_example(hdiffsmag)
